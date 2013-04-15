@@ -1,6 +1,6 @@
 #include "openglscene.h"
 
-OpenGLScene::OpenGLScene(std::string title, int width, int height):m_title(title), m_width(width), m_height(height) {}
+OpenGLScene::OpenGLScene(std::string title, int width, int height):m_title(title), m_width(width), m_height(height), renderer() {}
 
 OpenGLScene::~OpenGLScene() {}
 
@@ -55,6 +55,10 @@ bool OpenGLScene::init()
         return false;
     }
 
+    if (!initGL()) return false;
+
+    renderer.load();
+
     return true;
 }
 
@@ -97,12 +101,8 @@ bool OpenGLScene::initGL()
 
 void OpenGLScene::mainLoop()
 {
-    // Variables
 
-    bool done(false);
-    float vertices[] = {-0.5, -0.5,   0.0, 0.5,   0.5, -0.5};
-
-    // Boucle principale
+    bool done = true;
 
     while(!done)
     {
@@ -111,31 +111,10 @@ void OpenGLScene::mainLoop()
         SDL_WaitEvent(&m_events);
 
         if(m_events.window.event == SDL_WINDOWEVENT_CLOSE)
-            done = 1;
+            done = false;
 
 
-        // Nettoyage de l'écran
-
-        glClear(GL_COLOR_BUFFER_BIT);
-
-
-        // On remplie puis on active le tableau Vertex Attrib 0
-
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        glEnableVertexAttribArray(0);
-
-
-        // On affiche le triangle
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-
-        // On désactive le tableau Vertex Attrib puisque l'on n'en a plus besoin
-
-        glDisableVertexAttribArray(0);
-
-
-        // Actualisation de la fenêtre
+        renderer.display();
 
         SDL_GL_SwapWindow(m_window);
     }

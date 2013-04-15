@@ -17,8 +17,7 @@
 #include <iostream>
 #include <string>
 
-
-// Classe
+#include "glrenderer.h"
 
 class OpenGLScene
 {
@@ -41,6 +40,8 @@ class OpenGLScene
     SDL_Window* m_window;
     SDL_GLContext m_context;
     SDL_Event m_events;
+
+    GLRenderer renderer;
 };
 
 

@@ -14,11 +14,8 @@ int main(int argc, char **argv)
 
     // Initialisation de la scène
 
-    if(scene.init() == false)
-    return -1;
+    if(!scene.init()) return -1;
 
-    if(scene.initGL() == false)
-    return -1;
 
 
     // Boucle Principale
