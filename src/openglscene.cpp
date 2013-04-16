@@ -102,7 +102,7 @@ bool OpenGLScene::initGL()
 void OpenGLScene::mainLoop()
 {
 
-    bool done = true;
+    bool done = false;
 
     while(!done)
     {

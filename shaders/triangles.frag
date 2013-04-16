@@ -1,5 +1,6 @@
+#version 130
 
-varying vec4 fColor;
+out vec4 fColor;
 
 void main(void)
 {
