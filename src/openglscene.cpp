@@ -1,6 +1,11 @@
+#include <iostream>
+
 #include "openglscene.h"
 
-OpenGLScene::OpenGLScene(std::string title, int width, int height):m_title(title), m_width(width), m_height(height), renderer() {}
+
+using namespace std;
+
+OpenGLScene::OpenGLScene(string title, int width, int height):m_title(title), m_width(width), m_height(height), renderer() {}
 
 OpenGLScene::~OpenGLScene() {}
 
@@ -31,7 +36,7 @@ bool OpenGLScene::init()
 
     // Création de la fenêtre
 
-    m_window = SDL_CreateWindow(m_title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width, m_width, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+    m_window = SDL_CreateWindow(m_title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width, m_width, SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
     if(m_window == 0)
     {
@@ -55,64 +60,49 @@ bool OpenGLScene::init()
         return false;
     }
 
-    if (!initGL()) return false;
-
     renderer.load();
+
+    renderer.camera.moveAt(0.0, 0.0, 10.0);
+    renderer.camera.lookAt(0.0, 0.0, 0.0);
+
 
     return true;
 }
 
+void OpenGLScene::onResize(int w, int h) {
+    cout << w << ", " << h << endl;
+}
+void OpenGLScene::onExit() {
+    running = false;
+}
 
-bool OpenGLScene::initGL()
-{
-    #ifdef GLEW
+void OpenGLScene::onKeyDown(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode) {
 
-        // On initialise GLEW
+    switch(sym) {
+    case SDLK_ESCAPE:
+        running = false;
+        break;
+    case SDLK_UP:
+        renderer.camera.pose.z += 1;
+        break;
+    case SDLK_DOWN:
+        renderer.camera.pose.z -= 1;
+        break;
 
-        GLenum initGLEW( glewInit() );
+    }
 
-
-        // Si l'initialisation a échoué :
-
-        if(initGLEW != GLEW_OK)
-        {
-            // On affiche l'erreur grâce à la fonction : glewGetErrorString(GLenum code)
-
-            std::cout << "Erreur d'initialisation de GLEW : " << glewGetErrorString(initGLEW) << std::endl;
-
-
-            // On quitte la SDL
-
-            SDL_GL_DeleteContext(m_context);
-            SDL_DestroyWindow(m_window);
-            SDL_Quit();
-
-            return false;
-        }
-
-    #endif
-
-
-    // Tout s'est bien passé, on retourne true
-
-    return true;
 }
 
 
 void OpenGLScene::mainLoop()
 {
 
-    bool done = false;
+    running = true;
 
-    while(!done)
+    while(running)
     {
-        // Gestion des évènements
-
-        SDL_WaitEvent(&m_events);
-
-        if(m_events.window.event == SDL_WINDOWEVENT_CLOSE)
-            done = false;
-
+        SDL_Event event;
+        if(SDL_PollEvent(&event)) onEvent(&event);
 
         renderer.display();
 

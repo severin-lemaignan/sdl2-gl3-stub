@@ -1,25 +1,14 @@
 #ifndef OPENGLSCENE_H
 #define OPENGLSCENE_H
 
-
-// Includes
-#ifdef GLEW
-
-#include <GL/glew.h>
-
-#else
-#define GL3_PROTOTYPES 1
-#include <GL3/gl3.h>
-
-#endif
-
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <string>
 
+#include "sdleventshandler.h"
 #include "glrenderer.h"
 
-class OpenGLScene
+class OpenGLScene : public SDLEventsHandler
 {
     public:
 
@@ -27,11 +16,15 @@ class OpenGLScene
     ~OpenGLScene();
 
     bool init();
-    bool initGL();
     void mainLoop();
 
+    void onResize(int w, int h);
+    void onExit();
+    void onKeyDown(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode);
 
     private:
+
+    bool running;
 
     std::string m_title;
     int m_width;
@@ -39,7 +32,6 @@ class OpenGLScene
 
     SDL_Window* m_window;
     SDL_GLContext m_context;
-    SDL_Event m_events;
 
     GLRenderer renderer;
 };

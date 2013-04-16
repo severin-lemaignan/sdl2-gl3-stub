@@ -1,6 +1,10 @@
+#include <glm/gtc/type_ptr.hpp>
+
 #include "glrenderer.h"
 
-GLRenderer::GLRenderer() {}
+using namespace glm;
+
+GLRenderer::GLRenderer() : camera() {}
 
 void GLRenderer::load()
 {
@@ -35,6 +39,12 @@ void GLRenderer::display()
    glClear(GL_COLOR_BUFFER_BIT);
 
     glBindVertexArray(VAOs[Triangles]);
+
+    GLuint modelview_matrix = glGetUniformLocation(shader.id(), "modelview_matrix");
+    GLuint projection_matrix = glGetUniformLocation(shader.id(), "projection_matrix");
+    glUniformMatrix4fv(modelview_matrix, 1, GL_FALSE, value_ptr(camera.world2eye()));
+    glUniformMatrix4fv(projection_matrix, 1, GL_FALSE, value_ptr(camera.projection()));
+
     glDrawArrays(GL_TRIANGLES, 0, NumVertices);
     glFlush();
 }

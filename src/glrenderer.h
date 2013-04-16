@@ -1,10 +1,13 @@
 #ifndef GLRENDERER_H
 #define GLRENDERER_H
 
+#ifndef GL3_PROTOTYPES
 #define GL3_PROTOTYPES
 #include <GL3/gl3.h>
+#endif
 
 #include "shader.h"
+#include "camera.h"
 
 #define BUFFER_OFFSET(x)  ((void *) (x))
 
@@ -17,6 +20,8 @@ public:
 
     void load();
     void display();
+
+    Camera camera;
 
 private:
     Shader shader;
