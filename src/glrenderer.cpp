@@ -3,6 +3,7 @@
 #include "glrenderer.h"
 
 using namespace glm;
+using namespace std;
 
 GLRenderer::GLRenderer() : camera() {}
 
@@ -25,7 +26,7 @@ void GLRenderer::load()
     glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBuffer]);
     glBufferData(GL_ARRAY_BUFFER,sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    shader.init("../shaders/triangles.vert", "../shaders/triangles.frag");
+    shader.init(string("share/") + APPNAME + "/shaders/triangles.vert", string("share/") + APPNAME + "/shaders/triangles.frag");
 
     shader.bind();
 

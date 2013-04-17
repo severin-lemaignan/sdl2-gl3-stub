@@ -8,12 +8,12 @@
   <homepage>https://github.com/severin-lemaignan/sdl2-gl3-stub</homepage>
   <category>Development</category>
   <needs-terminal/>
-  <implementation arch="*-src" compile:binary-main="opengl-test" compile:command="cmake -D &quot;CMAKE_INSTALL_PREFIX=$DISTDIR&quot;  &quot;$SRCDIR&quot; &amp;&amp; make install" id="sha1new=23117ae2abbd5d58b855369cc9be73ac5a1b500f" license="BSD" released="2013-04-17" version="0.1">
+  <implementation arch="*-src" compile:binary-main="bin/sdl2-gl3-stub" compile:command="cmake -D &quot;CMAKE_INSTALL_PREFIX=$DISTDIR&quot;  &quot;$SRCDIR&quot; &amp;&amp; make install" id="sha1new=23117ae2abbd5d58b855369cc9be73ac5a1b500f" license="BSD" released="2013-04-17" version="0.1">
     <archive extract="sdl2-gl3-stub-master" href="https://codeload.github.com/severin-lemaignan/sdl2-gl3-stub/zip/master" size="10772" type="application/zip"/>
   </implementation>
 </interface>
 <!-- Base64 Signature
-iEYEABECAAYFAlFujvkACgkQrIbVut/WhtOrfACdGp6H63bidfn7z0foy/pmr1Y7jVwAoJywzjjm
-LnYKLzfUMXqYyDtPQpaz
+iEYEABECAAYFAlFumbkACgkQrIbVut/WhtNBZgCdFy/iXy7RcWZYHfgHZovqlwRkJw0AniIrYv1R
+ZzQX6ZEaS/N3+fhN5lom
 
 -->

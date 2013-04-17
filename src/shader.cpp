@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 #include "shader.h"
 
@@ -23,8 +24,7 @@ using namespace std; // Include the standard namespace
 static string textFileRead(const string& fileName) {
     ifstream shaderFile(fileName.c_str());
     if(!shaderFile) {
-    cerr << "Shader " << fileName << " does not exist!" << endl;
-    return "";
+        throw runtime_error("Shader " + fileName + " does not exist");
     }
 
     stringstream shaderData;
