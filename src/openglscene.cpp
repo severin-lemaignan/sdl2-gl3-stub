@@ -1,9 +1,11 @@
 #include <iostream>
 
+#include <glm/glm.hpp>
 #include "openglscene.h"
 
 
 using namespace std;
+using namespace glm;
 
 OpenGLScene::OpenGLScene(string title, int width, int height):m_title(title), m_width(width), m_height(height), renderer() {}
 
@@ -62,8 +64,8 @@ bool OpenGLScene::init()
 
     renderer.load();
 
-    renderer.camera.moveAt(0.0, 0.0, 10.0);
-    renderer.camera.lookAt(0.0, 0.0, 0.0);
+    renderer.camera.pose = vec3(0.0, 0.0, 10.0);
+    renderer.camera.lookat = vec3(0.0, 0.0, 0.0);
 
 
     return true;
@@ -71,6 +73,7 @@ bool OpenGLScene::init()
 
 void OpenGLScene::onResize(int w, int h) {
     cout << w << ", " << h << endl;
+    renderer.resize(w,h);
 }
 void OpenGLScene::onExit() {
     running = false;
@@ -83,14 +86,27 @@ void OpenGLScene::onKeyDown(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode) {
         running = false;
         break;
     case SDLK_UP:
-        renderer.camera.pose.z += 1;
+        renderer.camera.moveLookAt(0.0, 0.1);
         break;
     case SDLK_DOWN:
-        renderer.camera.pose.z -= 1;
+        renderer.camera.moveLookAt(0.0, -0.1);
         break;
 
     }
 
+}
+
+void OpenGLScene::onMouseMove(int mX, int mY, int relX, int relY, bool Left, bool Right, bool Middle)
+{
+    float ratio = 100.0f;
+    if (Left)
+    {
+    renderer.camera.moveLookAt(relX / ratio, relY / ratio);
+    }
+    if (Right)
+    {
+    renderer.camera.moveAt(relX / ratio, relY / ratio, 0.0);
+    }
 }
 
 

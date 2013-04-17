@@ -21,6 +21,7 @@ class OpenGLScene : public SDLEventsHandler
     void onResize(int w, int h);
     void onExit();
     void onKeyDown(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode);
+    void onMouseMove(int mX, int mY, int relX, int relY, bool Left,bool Right,bool Middle);
 
     private:
 

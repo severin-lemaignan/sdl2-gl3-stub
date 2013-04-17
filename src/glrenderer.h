@@ -21,6 +21,7 @@ public:
     void load();
     void display();
 
+    void resize(const int w, const int h);
     Camera camera;
 
 private:

@@ -49,3 +49,8 @@ void GLRenderer::display()
     glDrawArrays(GL_TRIANGLES, 0, NumVertices);
     glFlush();
 }
+
+void GLRenderer::resize(const int w, const int h)
+{
+    glViewport(0,0,w,h);
+}
