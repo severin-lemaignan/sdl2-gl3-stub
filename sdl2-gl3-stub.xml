@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<?xml-stylesheet type='text/xsl' href='interface.xsl'?>
+<interface uri="https://raw.github.com/severin-lemaignan/sdl2-gl3-stub/master/sdl2-gl3-stub.xml" xmlns="http://zero-install.sourceforge.net/2004/injector/interface" xmlns:compile="http://zero-install.sourceforge.net/2006/namespaces/0compile">
+  <name>sdl2-gl3-stub</name>
+  <summary>A stub application that relies on SDL2, OpenGL3 and CMake</summary>
+  <description>
+</description>
+  <homepage>https://github.com/severin-lemaignan/sdl2-gl3-stub</homepage>
+  <category>Development</category>
+  <needs-terminal/>
+  <implementation arch="*-src" compile:binary-main="opengl-test" compile:command="cmake -D &quot;CMAKE_INSTALL_PREFIX=$DISTDIR&quot;  &quot;$SRCDIR&quot; &amp;&amp; make install" id="sha1new=23117ae2abbd5d58b855369cc9be73ac5a1b500f" license="BSD" released="2013-04-17" version="0.1">
+    <archive extract="sdl2-gl3-stub-master" href="https://codeload.github.com/severin-lemaignan/sdl2-gl3-stub/zip/master" size="10772" type="application/zip"/>
+  </implementation>
+</interface>
+<!-- Base64 Signature
+iEYEABECAAYFAlFujhgACgkQYMp8+lyT1Ex6UACfS9VH/VXJkeBclKYY9snsRcqTkjcAoK169Pdh
+Aflz3UdsfGY6ZJnGnKWj
+
+-->
