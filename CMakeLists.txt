@@ -9,6 +9,10 @@ set(LIBS ${LIBS} ${OPENGL_LIBRARY})
 add_definitions(`sdl2-config --cflags`)	# SDL CFLAGS
 set(LIBS ${LIBS} 'SDL2')
 
+find_package(Assimp REQUIRED)
+include_directories(${ASSIMP_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${ASSIMP_LIBRARIES})
+
 add_definitions('-fpermissive')
 
 add_definitions('-DAPPNAME="${PROJECT_NAME}"')

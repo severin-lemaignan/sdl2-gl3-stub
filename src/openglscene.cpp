@@ -62,7 +62,8 @@ bool OpenGLScene::init()
         return false;
     }
 
-    renderer.load();
+    //renderer.load("../res/cube.dae");
+    renderer.load("../res/adream.dae");
 
     renderer.camera.pose = vec3(0.0, 0.0, 10.0);
     renderer.camera.lookat = vec3(0.0, 0.0, 0.0);
@@ -125,4 +126,3 @@ void OpenGLScene::mainLoop()
         SDL_GL_SwapWindow(m_window);
     }
 }
-
