@@ -59,7 +59,7 @@ void AssimpLoader::recursiveLoad(const struct aiNode* nd, Node& parent, vector<N
         node.meshes.push_back(out);
     }
 
-    for (n = 0; n < nd->mNumChildren; ++n)
+    for (int n = 0; n < nd->mNumChildren; ++n)
     {
     recursiveLoad(nd->mChildren[n], node, nodes);
     }

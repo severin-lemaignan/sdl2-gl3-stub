@@ -148,11 +148,11 @@ void SDLEventsHandler::onInputBlur() {
     //Pure virtual, do nothing
 }
 
-void SDLEventsHandler::onKeyDown(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode) {
+void SDLEventsHandler::onKeyDown(SDL_Keycode sym, Uint16 mod, Uint32 unicode) {
     //Pure virtual, do nothing
 }
 
-void SDLEventsHandler::onKeyUp(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode) {
+void SDLEventsHandler::onKeyUp(SDL_Keycode sym, Uint16 mod, Uint32 unicode) {
     //Pure virtual, do nothing
 }
 

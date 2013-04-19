@@ -17,9 +17,9 @@ class SDLEventsHandler
 
         virtual void onInputBlur();
 
-        virtual void onKeyDown(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode);
+        virtual void onKeyDown(SDL_Keycode sym, Uint16 mod, Uint32 unicode);
 
-        virtual void onKeyUp(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode);
+        virtual void onKeyUp(SDL_Keycode sym, Uint16 mod, Uint32 unicode);
 
         virtual void onMouseFocus();
 

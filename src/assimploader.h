@@ -8,8 +8,8 @@
 #include <GL3/gl3.h>
 #endif
 
-#import "node.h"
-#import "mesh.h"
+#include "node.h"
+#include "mesh.h"
 
 class AssimpLoader
 {

@@ -4,6 +4,11 @@
 #include <vector>
 #include <string>
 
+#ifndef GL3_PROTOTYPES
+#define GL3_PROTOTYPES
+#include <GL3/gl3.h>
+#endif
+
 #include "node.h"
 
 struct Node;

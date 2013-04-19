@@ -13,8 +13,6 @@ find_package(Assimp REQUIRED)
 include_directories(${ASSIMP_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${ASSIMP_LIBRARIES})
 
-add_definitions('-fpermissive')
-
 add_definitions('-DAPPNAME="${PROJECT_NAME}"')
 
 aux_source_directory(src SRC_LIST)
