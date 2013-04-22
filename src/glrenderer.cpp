@@ -18,24 +18,36 @@ void GLRenderer::load(const string& file)
 
     shader.bind();
 
-    //glVertexAttribPointer(vPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glVertexAttribPointer(vPosition, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vPosition);
 }
 
 void GLRenderer::display()
 {
    glClear(GL_COLOR_BUFFER_BIT);
 
-    //glBindVertexArray(VAOs[Triangles]);
 
     GLuint modelview_matrix = glGetUniformLocation(shader.id(), "modelview_matrix");
     GLuint projection_matrix = glGetUniformLocation(shader.id(), "projection_matrix");
-    glUniformMatrix4fv(modelview_matrix, 1, GL_FALSE, value_ptr(camera.world2eye()));
-    glUniformMatrix4fv(projection_matrix, 1, GL_FALSE, value_ptr(camera.projection()));
 
-    //glDrawArrays(GL_TRIANGLES, 0, NumVertices);
-    //glFlush();
+    recursiveRender(root);
+}
+
+void GLRenderer::recursiveRender(const Node& node, GLuint mv_uniform, GLuint proj_uniform) {
+
+    for (auto mesh : node.meshes) {
+
+    glBindVertexArray(mesh.vao);
+
+    //glVertexAttribPointer(vPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(vPosition);
+
+    glUniformMatrix4fv(mv_uniform, 1, GL_FALSE, value_ptr(node.transformation * camera.world2eye()));
+    glUniformMatrix4fv(proj_uniform, 1, GL_FALSE, value_ptr(camera.projection()));
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
+    glDrawArrays(GL_TRIANGLES, 0, mesh.numvertices);
+    glFlush();
+    }
 }
 
 void GLRenderer::resize(const int w, const int h)

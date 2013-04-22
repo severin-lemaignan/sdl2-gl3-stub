@@ -29,6 +29,8 @@ public:
 
 private:
 
+    void recursiveRender(const Node &node, GLuint mv_uniform, GLuint proj_uniform);
+
     Node root;
     std::vector<Node> nodes;
 

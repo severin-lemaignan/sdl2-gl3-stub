@@ -1,11 +1,15 @@
 #include <iostream>
 #include <fstream>
 
+#include <glm/glm.hpp>
+
 #include <assimp/postprocess.h>
+#include <assimp/matrix4x4.h>
 
 #include "assimploader.h"
 
 using namespace std;
+using namespace glm;
 
 // currently these are hardcoded
 static const std::string basepath = "../../test/models/OBJ/";
@@ -52,6 +56,14 @@ void AssimpLoader::recursiveLoad(const struct aiNode* nd, Node& parent, vector<N
     node.name = string(nd->mName.C_Str());
     cout << endl << "Created node " << node.name << endl;
 
+    aiMatrix4x4 m = nd->mTransformation;
+    m.Transpose();
+    node.transformation =
+        mat4(m.a1, m.a2, m.a3, m.a4,
+             m.b1, m.b2, m.b3, m.b4,
+             m.c1, m.c2, m.c3, m.c4,
+             m.d1, m.d2, m.d3, m.d4 );
+
     for (int n = 0; n < nd->mNumMeshes; ++n)
     {
         Mesh out;
@@ -61,7 +73,7 @@ void AssimpLoader::recursiveLoad(const struct aiNode* nd, Node& parent, vector<N
 
     for (int n = 0; n < nd->mNumChildren; ++n)
     {
-    recursiveLoad(nd->mChildren[n], node, nodes);
+        recursiveLoad(nd->mChildren[n], node, nodes);
     }
 
     // must be done *after* the recursion, else recursiveLoad(..., node, ...) would not be useful ('node' discarded)
