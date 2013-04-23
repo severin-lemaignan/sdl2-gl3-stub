@@ -7,6 +7,7 @@
 #define GL3_PROTOTYPES
 #include <GL3/gl3.h>
 #endif
+#include <glm/glm.hpp>
 
 #include "node.h"
 #include "mesh.h"
@@ -25,8 +26,10 @@ class AssimpLoader
     // Create an instance of the Importer class
     Assimp::Importer importer;
 
-    void recursiveLoad(const struct aiNode* nd, Node &parent, std::vector<Node> &nodes);
+    Node* recursiveLoad(const struct aiNode* nd, std::vector<Node> &nodes);
     void makeMesh(const aiMesh& in, Mesh& out, const Node &node);
+    std::size_t countNodes(const aiNode *nd);
+    void fillMaterial(const aiMaterial &mat, glm::vec4 &diffuse);
 
 public:
 

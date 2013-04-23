@@ -46,10 +46,27 @@ bool AssimpLoader::Import3DFromFile( const string& pFile)
 }
 void AssimpLoader::loadNodes(Node& root, vector<Node>& nodes)
 {
-    recursiveLoad(scene->mRootNode, root, nodes);
+    size_t nbNodes = countNodes(scene->mRootNode);
+    cout << "Loading " << nbNodes << " nodes..." << endl;
+
+    nodes.reserve(nbNodes); // allocate now enough space to prevent later vector resizing (this would cause pointer invalidation).
+
+    root = *recursiveLoad(scene->mRootNode, nodes);
 }
 
-void AssimpLoader::recursiveLoad(const struct aiNode* nd, Node& parent, vector<Node>& nodes)
+size_t AssimpLoader::countNodes(const aiNode* nd) {
+
+    size_t count = 1;
+
+    for (int n = 0; n < nd->mNumChildren; ++n)
+    {
+        count += countNodes(nd->mChildren[n]);
+    }
+
+    return count;
+}
+
+Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
 {
 
     Node node;
@@ -73,13 +90,12 @@ void AssimpLoader::recursiveLoad(const struct aiNode* nd, Node& parent, vector<N
 
     for (int n = 0; n < nd->mNumChildren; ++n)
     {
-        recursiveLoad(nd->mChildren[n], node, nodes);
+        Node* child = recursiveLoad(nd->mChildren[n], nodes);
+        node.children.push_back(child);
     }
 
-    // must be done *after* the recursion, else recursiveLoad(..., node, ...) would not be useful ('node' discarded)
-    nodes.push_back(node);
-    parent.children.push_back(&nodes.back()); // tracks the node we just added to 'nodes'
-
+    nodes.push_back(node); // add myself to the list of nodes
+    return &nodes.back(); // returns the pointer to my own copy in 'nodes'
 }
 
 void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
@@ -116,17 +132,17 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
     /* buffer for vertex positions*/
     GLfloat *vertexarray;
     vertexarray = ( GLfloat *)malloc(sizeof( GLfloat ) * in.mNumVertices * 3);
-    unsigned int vetexindex = 0;
+    unsigned int vertexindex = 0;
 
     if ( in.HasPositions() )
     {
         for ( unsigned int t = 0; t < in.mNumVertices; ++t )
         {
 
-            vertexarray[ vetexindex ] = in.mVertices[ t ].x;
-            vertexarray[ vetexindex + 1 ] = in.mVertices[ t ].y;
-            vertexarray[ vetexindex + 2 ] = in.mVertices[ t ].z;
-            vetexindex += 3;
+            vertexarray[ vertexindex ] = in.mVertices[ t ].x;
+            vertexarray[ vertexindex + 1 ] = in.mVertices[ t ].y;
+            vertexarray[ vertexindex + 2 ] = in.mVertices[ t ].z;
+            vertexindex += 3;
         }
         //GL_ARRAY_BUFFER
         glGenBuffers( 1, &out.vbo );
