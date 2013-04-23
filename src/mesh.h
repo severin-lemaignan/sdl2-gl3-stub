@@ -9,6 +9,8 @@
 #include <GL3/gl3.h>
 #endif
 
+#include <glm/glm.hpp>
+
 #include "node.h"
 
 struct Node;
@@ -22,6 +24,11 @@ struct Mesh
     GLuint vbo;
     int numfaces;
     GLuint ibo;
+
+    glm::vec4 diffuse;
+    glm::vec4 ambient;
+    glm::vec4 specular;
+    float shininess;
 };
 
 #endif // MESH_H

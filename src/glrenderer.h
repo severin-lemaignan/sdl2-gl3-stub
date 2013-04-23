@@ -29,7 +29,7 @@ public:
 
 private:
 
-    void recursiveRender(const Node &node, GLuint mv_uniform, GLuint proj_uniform);
+    void recursiveRender(const Node &node);
 
     Node root;
     std::vector<Node> nodes;
@@ -41,7 +41,6 @@ private:
     std::map<std::string, GLint> VAO_IDs;
     std::map<std::string, GLint> Buffer_IDs;
 
-    enum Attrib_IDs { vPosition = 0 };
 
 };
 

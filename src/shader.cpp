@@ -17,6 +17,7 @@
 
 using namespace std; // Include the standard namespace
 
+
 /**
     textFileRead loads in a standard text file from a given filename and
     then returns it as a string.
@@ -27,6 +28,7 @@ static string textFileRead(const string& fileName) {
         throw runtime_error("Shader " + fileName + " does not exist");
     }
 
+    cout << "Reading shader " << fileName << endl;
     stringstream shaderData;
     shaderData << shaderFile.rdbuf();  //Loads the entire string into a string stream.
     shaderFile.close();
@@ -125,11 +127,14 @@ void Shader::init(const string &vsFile, const string &fsFile) {
     glAttachShader(shader_id, shader_vp); // Attach a vertex shader to the program
     glAttachShader(shader_id, shader_fp); // Attach the fragment shader to the program
 
-    glBindAttribLocation(shader_id, 0, "in_Position"); // Bind a constant attribute location for positions of vertices
-    glBindAttribLocation(shader_id, 1, "in_Color"); // Bind another constant attribute location, this time for color
+    glBindAttribLocation(shader_id, POSITION_ATTRIB, "position"); // Bind a constant attribute location for positions of vertices
 
     glLinkProgram(shader_id); // Link the vertex and fragment shaders in the program
     validateProgram(shader_id); // Validate the shader program
+
+    uniformLocations[MODELVIEW_UNIFORM] = glGetUniformLocation(shader_id, "modelview_matrix");
+    uniformLocations[PROJECTION_UNIFORM] = glGetUniformLocation(shader_id, "projection_matrix");
+    uniformLocations[DIFFUSE_UNIFORM] = glGetUniformLocation(shader_id, "diffuse");
 }
 
 /**

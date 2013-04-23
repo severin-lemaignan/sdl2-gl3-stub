@@ -21,10 +21,16 @@ public:
     
     unsigned int id(); // Get the identifier for our program
     
+    enum Attrib_IDs {POSITION_ATTRIB=0};
+    enum Uniform_IDs {MODELVIEW_UNIFORM=0, PROJECTION_UNIFORM, DIFFUSE_UNIFORM, NumUniforms};
+
+    unsigned int uniformLocations[NumUniforms];
+
 private:
+
     unsigned int shader_id; // The shader program identifier
     unsigned int shader_vp; // The vertex shader identifier
     unsigned int shader_fp; // The fragment shader identifier
-    
+
     bool inited; // Whether or not we have initialized the shader
 };

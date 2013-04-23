@@ -5,7 +5,8 @@
 using namespace glm;
 using namespace std;
 
-GLRenderer::GLRenderer() : camera(), assimploader() {}
+GLRenderer::GLRenderer() : camera(), assimploader(){}
+
 
 void GLRenderer::load(const string& file)
 {
@@ -24,29 +25,26 @@ void GLRenderer::display()
 {
    glClear(GL_COLOR_BUFFER_BIT);
 
-
-    GLuint modelview_matrix = glGetUniformLocation(shader.id(), "modelview_matrix");
-    GLuint projection_matrix = glGetUniformLocation(shader.id(), "projection_matrix");
-
-    recursiveRender(root);
+   recursiveRender(root);
 }
 
-void GLRenderer::recursiveRender(const Node& node, GLuint mv_uniform, GLuint proj_uniform) {
+void GLRenderer::recursiveRender(const Node& node) {
 
     for (auto mesh : node.meshes) {
 
-    glBindVertexArray(mesh.vao);
+        glBindVertexArray(mesh.vao);
 
-    //glVertexAttribPointer(vPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(vPosition);
 
-    glUniformMatrix4fv(mv_uniform, 1, GL_FALSE, value_ptr(node.transformation * camera.world2eye()));
-    glUniformMatrix4fv(proj_uniform, 1, GL_FALSE, value_ptr(camera.projection()));
+        glUniformMatrix4fv(shader.uniformLocations[Shader::MODELVIEW_UNIFORM], 1, GL_FALSE, value_ptr(node.transformation * camera.world2eye()));
+        glUniformMatrix4fv(shader.uniformLocations[Shader::PROJECTION_UNIFORM], 1, GL_FALSE, value_ptr(camera.projection()));
+        glUniform4fv(shader.uniformLocations[Shader::DIFFUSE_UNIFORM], 1, value_ptr(mesh.diffuse));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
-    glDrawArrays(GL_TRIANGLES, 0, mesh.numvertices);
-    glFlush();
+        glDrawElements(GL_TRIANGLES, mesh.numfaces * 3, GL_UNSIGNED_INT, 0);
+        glFlush();
+    }
+
+    for (auto n : node.children) {
+        recursiveRender(*n);
     }
 }
 

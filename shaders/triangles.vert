@@ -3,9 +3,9 @@
 uniform mat4 modelview_matrix;
 uniform mat4 projection_matrix;
 
-in vec4 vPosition;
+in vec4 position;
 
 void main(void)
 {
-    gl_Position = projection_matrix * modelview_matrix * vPosition;
+    gl_Position = projection_matrix * modelview_matrix * position;
 }

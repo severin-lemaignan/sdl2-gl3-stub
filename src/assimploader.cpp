@@ -7,6 +7,7 @@
 #include <assimp/matrix4x4.h>
 
 #include "assimploader.h"
+#include "shader.h" // for attribute locations
 
 using namespace std;
 using namespace glm;
@@ -104,7 +105,12 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
     out.name = string(in.mName.C_Str());
     cout << "Created mesh " << out.name << endl;
 
+    const aiMaterial* material = scene->mMaterials[in.mMaterialIndex];
+    fillMaterial(*material, out.diffuse);
 
+    // One VertexArrayObject per object
+    // All the state (vertex buffer, element buffer, vertex attrib) is ssaved in
+    // the VAO.
     glGenVertexArrays(1, &out.vao);
     glBindVertexArray(out.vao);
 
@@ -152,6 +158,9 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
 
     out.numvertices = in.mNumVertices;
 
+    glVertexAttribPointer(Shader::POSITION_ATTRIB, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
     /*debug for faces or elements*/
     /*for( unsigned int x=0; x < in.mNumVertices ; ++x )
     {
@@ -164,6 +173,12 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
 }
 
 
+void AssimpLoader::fillMaterial(const aiMaterial& mat, vec4& diffuse) {
 
+    aiColor3D aiDiffuse;
+
+    mat.Get(AI_MATKEY_COLOR_DIFFUSE, aiDiffuse);
+    diffuse = vec4(aiDiffuse.r, aiDiffuse.g, aiDiffuse.b, 1.0f);
+}
 
 
