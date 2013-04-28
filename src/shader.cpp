@@ -132,8 +132,9 @@ void Shader::init(const string &vsFile, const string &fsFile) {
     glLinkProgram(shader_id); // Link the vertex and fragment shaders in the program
     validateProgram(shader_id); // Validate the shader program
 
-    uniformLocations[MODELVIEW_UNIFORM] = glGetUniformLocation(shader_id, "modelview_matrix");
-    uniformLocations[PROJECTION_UNIFORM] = glGetUniformLocation(shader_id, "projection_matrix");
+    uniformLocations[MODEL_UNIFORM] = glGetUniformLocation(shader_id, "model");
+    uniformLocations[VIEW_UNIFORM] = glGetUniformLocation(shader_id, "view");
+    uniformLocations[PROJECTION_UNIFORM] = glGetUniformLocation(shader_id, "projection");
     uniformLocations[DIFFUSE_UNIFORM] = glGetUniformLocation(shader_id, "diffuse");
 }
 

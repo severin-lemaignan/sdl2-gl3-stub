@@ -9,6 +9,9 @@
 #include "assimploader.h"
 #include "shader.h" // for attribute locations
 
+
+#include "helpers.h"
+
 using namespace std;
 using namespace glm;
 
@@ -66,7 +69,6 @@ size_t AssimpLoader::countNodes(const aiNode* nd) {
 
     return count;
 }
-
 Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
 {
 
@@ -74,6 +76,8 @@ Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
     node.name = string(nd->mName.C_Str());
     cout << endl << "Created node " << node.name << endl;
 
+    //copy assimp matrix to GLM.
+    //memcpy(&node.transformation, &nd->mTransformation, 16*sizeof(GLfloat));
     aiMatrix4x4 m = nd->mTransformation;
     m.Transpose();
     node.transformation =
@@ -81,6 +85,9 @@ Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
              m.b1, m.b2, m.b3, m.b4,
              m.c1, m.c2, m.c3, m.c4,
              m.d1, m.d2, m.d3, m.d4 );
+
+    printai(m);
+    printglm(node.transformation);
 
     for (int n = 0; n < nd->mNumMeshes; ++n)
     {

@@ -1,11 +1,12 @@
 #version 130
 
-uniform mat4 modelview_matrix;
-uniform mat4 projection_matrix;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 in vec4 position;
 
 void main(void)
 {
-    gl_Position = projection_matrix * modelview_matrix * position;
+    gl_Position = projection * view * model * position;
 }

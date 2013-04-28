@@ -65,8 +65,8 @@ bool OpenGLScene::init()
     //renderer.load("../res/cube.dae");
     renderer.load("../res/adream.dae");
 
-    renderer.camera.pose = vec3(0.0, 0.0, 10.0);
-    renderer.camera.lookat = vec3(0.0, 0.0, 0.0);
+    renderer.camera.pose = vec3(9.0, 5.0, 10.0);
+    renderer.camera.lookat = vec3(5.8, 2.2, 1.6);
 
 
     return true;
@@ -80,7 +80,7 @@ void OpenGLScene::onExit() {
     running = false;
 }
 
-void OpenGLScene::onKeyDown(SDL_Keycode sym, SDL_Keymod mod, Uint16 unicode) {
+void OpenGLScene::onKeyDown(SDL_Keycode sym, Uint16 mod, Uint32 unicode) {
 
     switch(sym) {
     case SDLK_ESCAPE:
@@ -102,11 +102,13 @@ void OpenGLScene::onMouseMove(int mX, int mY, int relX, int relY, bool Left, boo
     float ratio = 100.0f;
     if (Left)
     {
-    renderer.camera.moveLookAt(relX / ratio, relY / ratio);
+    renderer.camera.moveLookAt(relX / ratio, -relY / ratio);
+    cout << "Camera lookat: (" << renderer.camera.lookat.x << ", " << renderer.camera.lookat.y << ", " << renderer.camera.lookat.z << ")" << endl;
     }
     if (Right)
     {
-    renderer.camera.moveAt(relX / ratio, relY / ratio, 0.0);
+    renderer.camera.moveAt(-relX / ratio, -relY / ratio, 0.0);
+    cout << "Camera pose: (" << renderer.camera.pose.x << ", " << renderer.camera.pose.y << ", " << renderer.camera.pose.z << ")" << endl;
     }
 }
 

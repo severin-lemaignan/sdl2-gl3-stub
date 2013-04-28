@@ -1,4 +1,7 @@
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 #include "camera.h"
 
 using namespace glm;
@@ -43,11 +46,12 @@ void Camera::setAspect(int width, int height)
 // GL_PROJECTION
 mat4 Camera::projection()
 {
-    return glm::perspective(DEFAULT_FOV, _aspect, ZNEAR, ZFAR);
+    return perspective(DEFAULT_FOV, _aspect, ZNEAR, ZFAR);
 }
 
 // GL_MODELVIEW (well, WORLDVIEW in fact)
 mat4 Camera::world2eye()
 {
-    return glm::lookAt(pose, lookat, UP);
+    mat4 m = lookAt(pose, lookat, UP);
+    return m;
 }

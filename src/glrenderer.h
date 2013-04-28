@@ -29,7 +29,7 @@ public:
 
 private:
 
-    void recursiveRender(const Node &node);
+    void recursiveRender(const Node &node, const glm::mat4& parent2worldTransformation);
 
     Node root;
     std::vector<Node> nodes;

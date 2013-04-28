@@ -1,3 +1,4 @@
+#include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "glrenderer.h"
@@ -25,18 +26,22 @@ void GLRenderer::display()
 {
    glClear(GL_COLOR_BUFFER_BIT);
 
-   recursiveRender(root);
+   //glEnable(GL_DEPTH_TEST);
+   glUniformMatrix4fv(shader.uniformLocations[Shader::PROJECTION_UNIFORM], 1, GL_FALSE, value_ptr(camera.projection()));
+   glUniformMatrix4fv(shader.uniformLocations[Shader::VIEW_UNIFORM], 1, GL_FALSE, value_ptr(camera.world2eye()));
+   recursiveRender(root, mat4(1.0));
 }
 
-void GLRenderer::recursiveRender(const Node& node) {
+void GLRenderer::recursiveRender(const Node& node, const mat4& parent2worldTransformation) {
+
+    mat4 transformation = parent2worldTransformation * node.transformation;
+    glUniformMatrix4fv(shader.uniformLocations[Shader::MODEL_UNIFORM], 1, GL_FALSE, value_ptr(transformation));
 
     for (auto mesh : node.meshes) {
 
         glBindVertexArray(mesh.vao);
 
 
-        glUniformMatrix4fv(shader.uniformLocations[Shader::MODELVIEW_UNIFORM], 1, GL_FALSE, value_ptr(node.transformation * camera.world2eye()));
-        glUniformMatrix4fv(shader.uniformLocations[Shader::PROJECTION_UNIFORM], 1, GL_FALSE, value_ptr(camera.projection()));
         glUniform4fv(shader.uniformLocations[Shader::DIFFUSE_UNIFORM], 1, value_ptr(mesh.diffuse));
 
         glDrawElements(GL_TRIANGLES, mesh.numfaces * 3, GL_UNSIGNED_INT, 0);
@@ -44,7 +49,8 @@ void GLRenderer::recursiveRender(const Node& node) {
     }
 
     for (auto n : node.children) {
-        recursiveRender(*n);
+        //recursiveRender(*n, mat4(1.0));
+        recursiveRender(*n, transformation);
     }
 }
 
