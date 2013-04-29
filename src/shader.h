@@ -1,4 +1,5 @@
 #include <string>
+#include <map>
 
 // Stolen from http://www.swiftless.com/tutorials/opengl4/2-opengl-shaders.html
 
@@ -22,11 +23,13 @@ public:
     unsigned int id(); // Get the identifier for our program
     
     enum Attrib_IDs {POSITION_ATTRIB=0, NORMAL_ATTRIB};
-    enum Uniform_IDs {MODELVIEW_UNIFORM=0, PROJECTION_UNIFORM, DIFFUSE_UNIFORM, NumUniforms};
 
-    unsigned int uniformLocations[NumUniforms];
+    // Returns a uniform location, using memoization to limit opengl calls to the minimum
+    GLuint getUniform(const std::string& uniform);
 
 private:
+
+    std::map<std::string, GLuint> _uniforms;
 
     unsigned int shader_id; // The shader program identifier
     unsigned int shader_vp; // The vertex shader identifier

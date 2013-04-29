@@ -132,9 +132,6 @@ void Shader::init(const string &vsFile, const string &fsFile) {
     glLinkProgram(shader_id); // Link the vertex and fragment shaders in the program
     validateProgram(shader_id); // Validate the shader program
 
-    uniformLocations[MODELVIEW_UNIFORM] = glGetUniformLocation(shader_id, "modelview");
-    uniformLocations[PROJECTION_UNIFORM] = glGetUniformLocation(shader_id, "projection");
-    uniformLocations[DIFFUSE_UNIFORM] = glGetUniformLocation(shader_id, "diffuse");
 }
 
 /**
@@ -155,6 +152,18 @@ Shader::~Shader() {
 */
 unsigned int Shader::id() {
     return shader_id; // Return the shaders identifier
+}
+
+GLuint Shader::getUniform(const string &uniform)
+{
+    auto it = _uniforms.find(uniform);
+
+    if (it == _uniforms.end()) {
+        GLuint loc = glGetUniformLocation(shader_id, uniform.c_str());
+        _uniforms[uniform] = loc;
+        return loc;
+    }
+    else return it->second;
 }
 
 /**

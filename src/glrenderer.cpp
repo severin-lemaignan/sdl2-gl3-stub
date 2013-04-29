@@ -29,21 +29,21 @@ void GLRenderer::display()
 {
 
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-   glUniformMatrix4fv(shader.uniformLocations[Shader::PROJECTION_UNIFORM], 1, GL_FALSE, value_ptr(camera.projection()));
+   glUniformMatrix4fv(shader.getUniform("projection"), 1, GL_FALSE, value_ptr(camera.projection()));
    recursiveRender(root, mat4(1.0));
 }
 
 void GLRenderer::recursiveRender(const Node& node, const mat4& parent2worldTransformation) {
 
     mat4 transformation = parent2worldTransformation * node.transformation;
-    glUniformMatrix4fv(shader.uniformLocations[Shader::MODELVIEW_UNIFORM], 1, GL_FALSE, value_ptr(camera.world2eye() * transformation));
+    glUniformMatrix4fv(shader.getUniform("modelview"), 1, GL_FALSE, value_ptr(camera.world2eye() * transformation));
 
     for (auto mesh : node.meshes) {
 
         glBindVertexArray(mesh.vao);
 
 
-        glUniform4fv(shader.uniformLocations[Shader::DIFFUSE_UNIFORM], 1, value_ptr(mesh.diffuse));
+        glUniform4fv(shader.getUniform("diffuse"), 1, value_ptr(mesh.diffuse));
 
         glDrawElements(GL_TRIANGLES, mesh.numfaces * 3, GL_UNSIGNED_INT, 0);
         glFlush();
