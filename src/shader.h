@@ -22,7 +22,7 @@ public:
     unsigned int id(); // Get the identifier for our program
     
     enum Attrib_IDs {POSITION_ATTRIB=0, NORMAL_ATTRIB};
-    enum Uniform_IDs {MODEL_UNIFORM=0, VIEW_UNIFORM, PROJECTION_UNIFORM, DIFFUSE_UNIFORM, NumUniforms};
+    enum Uniform_IDs {MODELVIEW_UNIFORM=0, PROJECTION_UNIFORM, DIFFUSE_UNIFORM, NumUniforms};
 
     unsigned int uniformLocations[NumUniforms];
 
