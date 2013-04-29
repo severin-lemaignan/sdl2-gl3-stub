@@ -1,8 +1,8 @@
 #include <iostream>
+#include <sstream>
 
 #include <glm/glm.hpp>
 #include "openglscene.h"
-
 
 using namespace std;
 using namespace glm;
@@ -116,15 +116,33 @@ void OpenGLScene::onMouseMove(int mX, int mY, int relX, int relY, bool Left, boo
 void OpenGLScene::mainLoop()
 {
 
+    Uint32 last_fps_time = SDL_GetTicks();
+    Uint32 gl_time;
+    uint frames = 0;
+    uint fps;
+
     running = true;
 
     while(running)
     {
         SDL_Event event;
-        if(SDL_PollEvent(&event)) onEvent(&event);
+        while(SDL_PollEvent(&event)) onEvent(&event);
 
         renderer.display();
 
+        // Comment the bufferswaping to get max framerate (for benchmarking purposes)
         SDL_GL_SwapWindow(m_window);
+
+        frames++;
+        gl_time = SDL_GetTicks();
+
+         if( gl_time - last_fps_time > 1000 ) {
+              stringstream caption;
+             fps = frames * 1000.f / (gl_time - last_fps_time);
+             caption << "Average FPS: " << fps;
+             SDL_SetWindowTitle(m_window, caption.str().c_str());
+            frames = 0;
+            last_fps_time = gl_time;
+         }
     }
 }
