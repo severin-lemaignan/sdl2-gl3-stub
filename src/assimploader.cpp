@@ -76,8 +76,7 @@ Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
     node.name = string(nd->mName.C_Str());
     cout << endl << "Created node " << node.name << endl;
 
-    //copy assimp matrix to GLM.
-    //memcpy(&node.transformation, &nd->mTransformation, 16*sizeof(GLfloat));
+
     aiMatrix4x4 m = nd->mTransformation;
     m.Transpose();
     node.transformation =
@@ -86,8 +85,12 @@ Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
              m.c1, m.c2, m.c3, m.c4,
              m.d1, m.d2, m.d3, m.d4 );
 
-    printai(m);
-    printglm(node.transformation);
+    //equivalent code to copy assimp matrix to GLM. Slightly more efficient, but less readable
+    //memcpy(&node.transformation, &nd->mTransformation, 16*sizeof(GLfloat));
+    //node.transformation = transpose(node.transformation);
+
+    //printai(m);
+    //printglm(node.transformation);
 
     for (int n = 0; n < nd->mNumMeshes; ++n)
     {
@@ -144,7 +147,7 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
 
     /* buffer for vertex positions*/
     GLfloat *vertexarray;
-    vertexarray = ( GLfloat *)malloc(sizeof( GLfloat ) * in.mNumVertices * 3);
+    vertexarray = ( GLfloat *)malloc(sizeof( GLfloat ) * in.mNumVertices * 3 * 2); // for vertices + normals
     unsigned int vertexindex = 0;
 
     if ( in.HasPositions() )
@@ -155,18 +158,27 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
             vertexarray[ vertexindex ] = in.mVertices[ t ].x;
             vertexarray[ vertexindex + 1 ] = in.mVertices[ t ].y;
             vertexarray[ vertexindex + 2 ] = in.mVertices[ t ].z;
-            vertexindex += 3;
+            vertexarray[ vertexindex + 3 ] = in.mNormals[ t ].x;
+            vertexarray[ vertexindex + 4 ] = in.mNormals[ t ].y;
+            vertexarray[ vertexindex + 5 ] = in.mNormals[ t ].z;
+            vertexindex += 6;
         }
         //GL_ARRAY_BUFFER
         glGenBuffers( 1, &out.vbo );
         glBindBuffer( GL_ARRAY_BUFFER, out.vbo );
-        glBufferData( GL_ARRAY_BUFFER, sizeof(float) * ( in.mNumVertices * 3 ), vertexarray, GL_STATIC_DRAW );
+        glBufferData( GL_ARRAY_BUFFER, sizeof(float) * ( in.mNumVertices * 3 * 2 ), vertexarray, GL_STATIC_DRAW );
     }
 
     out.numvertices = in.mNumVertices;
 
-    glVertexAttribPointer(Shader::POSITION_ATTRIB, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(0);
+    uint stride = 6 * sizeof(GLfloat);
+
+    glVertexAttribPointer(Shader::POSITION_ATTRIB, 3, GL_FLOAT, GL_FALSE, stride, 0);
+    glEnableVertexAttribArray(Shader::POSITION_ATTRIB);
+
+    static GLuint loc_normal_offset    = 3*sizeof(GLfloat);
+    glVertexAttribPointer(Shader::NORMAL_ATTRIB, 3, GL_FLOAT, GL_FALSE, stride, &loc_normal_offset);
+    glEnableVertexAttribArray(Shader::NORMAL_ATTRIB);
 
     /*debug for faces or elements*/
     /*for( unsigned int x=0; x < in.mNumVertices ; ++x )

@@ -19,11 +19,12 @@ struct Mesh
 {
     const Node* node;
     std::string name;
-    GLuint vao;
+
+    GLuint vao; // vertex array object
     int numvertices;
-    GLuint vbo;
-    int numfaces;
-    GLuint ibo;
+    GLuint vbo; // vertices + normals
+     int numfaces;
+    GLuint ibo; // elements
 
     glm::vec4 diffuse;
     glm::vec4 ambient;
