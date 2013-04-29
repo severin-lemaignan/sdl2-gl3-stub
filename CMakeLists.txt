@@ -6,6 +6,12 @@ include(FindPkgConfig)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 set(LIBS ${LIBS} ${OPENGL_LIBRARY})
+
+# GLUT no required...
+#find_package(GLUT REQUIRED)
+#include_directories(${GLUT_INCLUDE_DIR})
+#set(LIBS ${LIBS} ${GLUT_LIBRARY})
+
 add_definitions(`sdl2-config --cflags`)	# SDL CFLAGS
 set(LIBS ${LIBS} 'SDL2')
 

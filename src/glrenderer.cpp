@@ -20,13 +20,15 @@ void GLRenderer::load(const string& file)
 
     shader.bind();
 
+   glEnable(GL_DEPTH_TEST);
+   glDepthFunc(GL_LEQUAL);
+   glEnable(GL_CULL_FACE);
 }
 
 void GLRenderer::display()
 {
-   glClear(GL_COLOR_BUFFER_BIT);
 
-   //glEnable(GL_DEPTH_TEST);
+   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
    glUniformMatrix4fv(shader.uniformLocations[Shader::PROJECTION_UNIFORM], 1, GL_FALSE, value_ptr(camera.projection()));
    glUniformMatrix4fv(shader.uniformLocations[Shader::VIEW_UNIFORM], 1, GL_FALSE, value_ptr(camera.world2eye()));
    recursiveRender(root, mat4(1.0));
