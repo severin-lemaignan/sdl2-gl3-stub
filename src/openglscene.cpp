@@ -103,12 +103,12 @@ void OpenGLScene::onMouseMove(int mX, int mY, int relX, int relY, bool Left, boo
     if (Left)
     {
     renderer.camera.moveLookAt(relX / ratio, -relY / ratio);
-    cout << "Camera lookat: (" << renderer.camera.lookat.x << ", " << renderer.camera.lookat.y << ", " << renderer.camera.lookat.z << ")" << endl;
+    //cout << "Camera lookat: (" << renderer.camera.lookat.x << ", " << renderer.camera.lookat.y << ", " << renderer.camera.lookat.z << ")" << endl;
     }
     if (Right)
     {
     renderer.camera.moveAt(-relX / ratio, -relY / ratio, 0.0);
-    cout << "Camera pose: (" << renderer.camera.pose.x << ", " << renderer.camera.pose.y << ", " << renderer.camera.pose.z << ")" << endl;
+    //cout << "Camera pose: (" << renderer.camera.pose.x << ", " << renderer.camera.pose.y << ", " << renderer.camera.pose.z << ")" << endl;
     }
 }
 

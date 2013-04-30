@@ -11,6 +11,7 @@
 
 #include "node.h"
 #include "mesh.h"
+#include "shader.h"
 
 class AssimpLoader
 {
@@ -26,16 +27,16 @@ class AssimpLoader
     // Create an instance of the Importer class
     Assimp::Importer importer;
 
-    Node* recursiveLoad(const struct aiNode* nd, std::vector<Node> &nodes);
-    void makeMesh(const aiMesh& in, Mesh& out, const Node &node);
+    Node* recursiveLoad(const struct aiNode* nd, std::vector<Node> &nodes, const Shader &shader);
+    void makeMesh(const aiMesh& in, Mesh& out, const Node &node, const Shader &shader);
     std::size_t countNodes(const aiNode *nd);
-    void fillMaterial(const aiMaterial &mat, glm::vec4 &diffuse);
+    void fillMaterial(const aiMaterial &mat, Mesh &mesh);
 
 public:
 
     bool Import3DFromFile(const std::string& name);
 
-    void loadNodes(Node& root, std::vector<Node>& nodes);
+    void loadNodes(Node& root, std::vector<Node>& nodes, const Shader& shader);
 
 
 };

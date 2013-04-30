@@ -1,3 +1,6 @@
+#ifndef SHADER_H
+#define SHADER_H
+
 #include <string>
 #include <map>
 
@@ -21,15 +24,18 @@ public:
     void unbind(); // Unbind our GLSL shader program
     
     unsigned int id(); // Get the identifier for our program
-    
-    enum Attrib_IDs {POSITION_ATTRIB=0, NORMAL_ATTRIB};
+
+    // Returns a GLSL attribute location, using memoization to limit opengl calls to the minimum
+    GLuint getAttrib(const std::string& attrib) const;
 
     // Returns a uniform location, using memoization to limit opengl calls to the minimum
-    GLuint getUniform(const std::string& uniform);
+    GLuint getUniform(const std::string& uniform) const;
+
 
 private:
 
-    std::map<std::string, GLuint> _uniforms;
+    mutable std::map<std::string, GLuint> _uniforms;
+    mutable std::map<std::string, GLuint> _attribs;
 
     unsigned int shader_id; // The shader program identifier
     unsigned int shader_vp; // The vertex shader identifier
@@ -37,3 +43,5 @@ private:
 
     bool inited; // Whether or not we have initialized the shader
 };
+
+#endif //SHADER_H

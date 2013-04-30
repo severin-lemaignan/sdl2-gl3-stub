@@ -7,7 +7,6 @@
 #include <assimp/matrix4x4.h>
 
 #include "assimploader.h"
-#include "shader.h" // for attribute locations
 
 
 #include "helpers.h"
@@ -48,14 +47,14 @@ bool AssimpLoader::Import3DFromFile( const string& pFile)
     // We're done. Everything will be cleaned up by the importer destructor
     return true;
 }
-void AssimpLoader::loadNodes(Node& root, vector<Node>& nodes)
+void AssimpLoader::loadNodes(Node& root, vector<Node>& nodes, const Shader& shader)
 {
     size_t nbNodes = countNodes(scene->mRootNode);
     cout << "Loading " << nbNodes << " nodes..." << endl;
 
     nodes.reserve(nbNodes); // allocate now enough space to prevent later vector resizing (this would cause pointer invalidation).
 
-    root = *recursiveLoad(scene->mRootNode, nodes);
+    root = *recursiveLoad(scene->mRootNode, nodes, shader);
 }
 
 size_t AssimpLoader::countNodes(const aiNode* nd) {
@@ -69,12 +68,12 @@ size_t AssimpLoader::countNodes(const aiNode* nd) {
 
     return count;
 }
-Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
+Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes, const Shader& shader)
 {
 
     Node node;
     node.name = string(nd->mName.C_Str());
-    cout << endl << "Created node " << node.name << endl;
+    //cout << endl << "Created node " << node.name << endl;
 
 
     aiMatrix4x4 m = nd->mTransformation;
@@ -95,13 +94,13 @@ Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
     for (int n = 0; n < nd->mNumMeshes; ++n)
     {
         Mesh out;
-        makeMesh(*scene->mMeshes[nd->mMeshes[n]], out, node);
+        makeMesh(*scene->mMeshes[nd->mMeshes[n]], out, node, shader);
         node.meshes.push_back(out);
     }
 
     for (int n = 0; n < nd->mNumChildren; ++n)
     {
-        Node* child = recursiveLoad(nd->mChildren[n], nodes);
+        Node* child = recursiveLoad(nd->mChildren[n], nodes, shader);
         node.children.push_back(child);
     }
 
@@ -109,14 +108,14 @@ Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes)
     return &nodes.back(); // returns the pointer to my own copy in 'nodes'
 }
 
-void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
+void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node, const Shader& shader)
 {
     out.node = &node;
     out.name = string(in.mName.C_Str());
-    cout << "Created mesh " << out.name << endl;
+    //cout << "Created mesh " << out.name << endl;
 
     const aiMaterial* material = scene->mMaterials[in.mMaterialIndex];
-    fillMaterial(*material, out.diffuse);
+    fillMaterial(*material, out);
 
     // One VertexArrayObject per object
     // All the state (vertex buffer, element buffer, vertex attrib) is ssaved in
@@ -142,7 +141,7 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
     /*face vbo*/
     glGenBuffers( 1, &out.ibo );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, out.ibo );
-    glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * (in.mNumFaces * 3), facearray, GL_STATIC_DRAW);
+    glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * (in.mNumFaces * 3), facearray, GL_STATIC_DRAW);
 
 
     /* buffer for vertex positions*/
@@ -166,19 +165,19 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
         //GL_ARRAY_BUFFER
         glGenBuffers( 1, &out.vbo );
         glBindBuffer( GL_ARRAY_BUFFER, out.vbo );
-        glBufferData( GL_ARRAY_BUFFER, sizeof(float) * ( in.mNumVertices * 3 * 2 ), vertexarray, GL_STATIC_DRAW );
+        glBufferData( GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexindex, vertexarray, GL_STATIC_DRAW );
     }
 
     out.numvertices = in.mNumVertices;
 
-    uint stride = 6 * sizeof(GLfloat);
+    static uint stride = 6 * sizeof(GLfloat);
 
-    glVertexAttribPointer(Shader::POSITION_ATTRIB, 3, GL_FLOAT, GL_FALSE, stride, 0);
-    glEnableVertexAttribArray(Shader::POSITION_ATTRIB);
+    glVertexAttribPointer(shader.getAttrib("position"), 3, GL_FLOAT, GL_FALSE, stride, 0);
+    glEnableVertexAttribArray(shader.getAttrib("position"));
 
     static GLuint loc_normal_offset    = 3*sizeof(GLfloat);
-    glVertexAttribPointer(Shader::NORMAL_ATTRIB, 3, GL_FLOAT, GL_FALSE, stride, &loc_normal_offset);
-    glEnableVertexAttribArray(Shader::NORMAL_ATTRIB);
+    glVertexAttribPointer(shader.getAttrib("normal"), 3, GL_FLOAT, GL_FALSE, stride, &loc_normal_offset);
+    glEnableVertexAttribArray(shader.getAttrib("normal"));
 
     /*debug for faces or elements*/
     /*for( unsigned int x=0; x < in.mNumVertices ; ++x )
@@ -192,12 +191,21 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node)
 }
 
 
-void AssimpLoader::fillMaterial(const aiMaterial& mat, vec4& diffuse) {
+void AssimpLoader::fillMaterial(const aiMaterial& mat, Mesh& mesh) {
 
+    aiColor3D aiAmbient;
     aiColor3D aiDiffuse;
+    aiColor3D aiSpecular;
+
+    mat.Get(AI_MATKEY_COLOR_AMBIENT, aiAmbient);
+    mesh.ambient = vec4(aiAmbient.r, aiAmbient.g, aiAmbient.b, 1.0f);
 
     mat.Get(AI_MATKEY_COLOR_DIFFUSE, aiDiffuse);
-    diffuse = vec4(aiDiffuse.r, aiDiffuse.g, aiDiffuse.b, 1.0f);
+    mesh.diffuse = vec4(aiDiffuse.r, aiDiffuse.g, aiDiffuse.b, 1.0f);
+
+    mat.Get(AI_MATKEY_COLOR_SPECULAR, aiSpecular);
+    mesh.specular = vec4(aiSpecular.r, aiSpecular.g, aiSpecular.b, 1.0f);
+
 }
 
 

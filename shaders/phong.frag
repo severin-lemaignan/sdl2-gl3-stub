@@ -1,10 +1,10 @@
 #version 130
 
-uniform vec4 mat_diffuse;
+in vec4 base_color;
 
 out vec4 fColor;
 
 void main(void)
 {
-    fColor = mat_diffuse;
+    fColor = base_color;
 }

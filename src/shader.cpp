@@ -64,14 +64,18 @@ static void validateProgram(GLuint program) {
     GLsizei length = 0;
     
     glGetProgramInfoLog(program, BUFFER_SIZE, &length, buffer); // Ask OpenGL to give us the log associated with the program
-    if (length > 0) // If we have any information to display
+    if (length > 0) {// If we have any information to display
         cout << "Program " << program << " link error: " << buffer << endl; // Output the information
-    
+        exit(-1);
+    }
+
     glValidateProgram(program); // Get OpenGL to try validating the program
     GLint status;
     glGetProgramiv(program, GL_VALIDATE_STATUS, &status); // Find out if the shader program validated correctly
-    if (status == GL_FALSE) // If there was a problem validating
+    if (status == GL_FALSE) { // If there was a problem validating
         cout << "Error validating shader " << program << endl; // Output which program had the error
+        exit(-1);
+    }
 }
 
 /**
@@ -127,8 +131,6 @@ void Shader::init(const string &vsFile, const string &fsFile) {
     glAttachShader(shader_id, shader_vp); // Attach a vertex shader to the program
     glAttachShader(shader_id, shader_fp); // Attach the fragment shader to the program
 
-    glBindAttribLocation(shader_id, POSITION_ATTRIB, "position"); // Bind a constant attribute location for positions of vertices
-
     glLinkProgram(shader_id); // Link the vertex and fragment shaders in the program
     validateProgram(shader_id); // Validate the shader program
 
@@ -154,17 +156,34 @@ unsigned int Shader::id() {
     return shader_id; // Return the shaders identifier
 }
 
-GLuint Shader::getUniform(const string &uniform)
+GLuint Shader::getUniform(const string &uniform) const
 {
     auto it = _uniforms.find(uniform);
 
     if (it == _uniforms.end()) {
         GLuint loc = glGetUniformLocation(shader_id, uniform.c_str());
+        if (loc == -1)
+            cerr << "Attention: uniform '" << uniform << "' does not exist!" << endl;
         _uniforms[uniform] = loc;
         return loc;
     }
     else return it->second;
 }
+
+GLuint Shader::getAttrib(const string &attrib) const
+{
+    auto it = _attribs.find(attrib);
+
+    if (it == _attribs.end()) {
+        GLuint loc = glGetAttribLocation(shader_id, attrib.c_str());
+        if (loc == -1)
+            cerr << "Attention: attribute '" << attrib << "' does not exist!" << endl;
+        _attribs[attrib] = loc;
+        return loc;
+    }
+    else return it->second;
+}
+
 
 /**
     bind attaches the shader program for use by OpenGL
