@@ -26,7 +26,8 @@ using namespace glm;
     then returns it as a string.
 */
 static string textFileRead(const string& fileName) {
-    ifstream shaderFile(fileName.c_str());
+    string fullname = string("share/") + APPNAME + "/shaders/" + fileName;
+    ifstream shaderFile(fullname.c_str());
     if(!shaderFile) {
         throw runtime_error("Shader " + fileName + " does not exist");
     }
@@ -185,6 +186,11 @@ GLuint Shader::getAttrib(const string &attrib) const
         return loc;
     }
     else return it->second;
+}
+
+void Shader::setUniform(const string &uniform, int i)
+{
+   glUniform1i(getUniform(uniform), i );
 }
 
 void Shader::setUniform(const string &uniform, float x)

@@ -13,6 +13,7 @@
 #include "camera.h"
 #include "node.h"
 #include "assimploader.h"
+#include "postprocess.h"
 
 #define BUFFER_OFFSET(x)  ((void *) (x))
 
@@ -42,7 +43,7 @@ private:
     std::map<std::string, GLint> VAO_IDs;
     std::map<std::string, GLint> Buffer_IDs;
 
-
+    Postprocess effect;
 };
 
 #endif // GLRENDERER_H

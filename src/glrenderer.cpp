@@ -2,10 +2,13 @@
 
 #include "glrenderer.h"
 
+
 using namespace glm;
 using namespace std;
 
-GLRenderer::GLRenderer() : camera(), assimploader(){}
+GLRenderer::GLRenderer() : camera(), assimploader(),
+        effect(800,600,"postprocessing/noop.vert", "postprocessing/noop.frag")
+    {}
 
 
 void GLRenderer::load(const string& file)
@@ -13,7 +16,7 @@ void GLRenderer::load(const string& file)
 
     assimploader.importFromFile(file);
 
-    shader.init(string("share/") + APPNAME + "/shaders/phong.vert", string("share/") + APPNAME + "/shaders/phong.frag");
+    shader.init("phong.vert", "phong.frag");
     assimploader.loadNodes(root, nodes, shader);
 
     shader.bind();
@@ -36,9 +39,13 @@ void GLRenderer::load(const string& file)
 void GLRenderer::display()
 {
 
+   //effect.recordDraw();
+
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
    shader.setUniform("projection", camera.projection());
    recursiveRender(root, mat4(1.0));
+
+    //effect.process();
 }
 
 void GLRenderer::recursiveRender(const Node& node, const mat4& parent2worldTransformation) {
@@ -66,4 +73,6 @@ void GLRenderer::recursiveRender(const Node& node, const mat4& parent2worldTrans
 void GLRenderer::resize(const int w, const int h)
 {
     glViewport(0,0,w,h);
+
+    effect.resize(w, h);
 }

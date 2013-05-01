@@ -27,6 +27,7 @@ public:
     
     unsigned int id() const; // Get the identifier for our program
 
+    void setUniform(const std::string& uniform, int i);
     void setUniform(const std::string& uniform, float x);
     void setUniform(const std::string& uniform, float x, float y);
     void setUniform(const std::string& uniform, float x, float y, float z);
