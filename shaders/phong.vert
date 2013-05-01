@@ -52,8 +52,8 @@ void main() {
 		+ (light_diffuse * mat_diffuse * diffuse_weight)
 	), 0.0, 1.0);
 
-	//base_color.r = (normal.x + 1) /2;
-	//base_color.g = (normal.y + 1) /2;
-	//base_color.b = (normal.z + 1) /2;
-	base_color = mat_diffuse;
+	base_color.r = (normal.x + 1) /2;
+	base_color.g = (normal.y + 1) /2;
+	base_color.b = (normal.z + 1) /2;
+	//base_color = mat_diffuse;
 }

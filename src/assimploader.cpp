@@ -144,46 +144,41 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node, const
     glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * (in.mNumFaces * 3), facearray, GL_STATIC_DRAW);
 
 
+    struct vertex {
+        float x,y,z; // position
+        float nx,ny,nz; // normals
+    };
+
     /* buffer for vertex positions*/
     GLfloat *vertexarray;
-    vertexarray = ( GLfloat *)malloc(sizeof( GLfloat ) * in.mNumVertices * 3 * 2); // for vertices + normals
+    vertexarray = ( GLfloat *)malloc(sizeof( vertex ) * in.mNumVertices);
+
     unsigned int vertexindex = 0;
 
-    if ( in.HasPositions() )
+    for ( unsigned int t = 0; t < in.mNumVertices; ++t )
     {
-        for ( unsigned int t = 0; t < in.mNumVertices; ++t )
-        {
 
-            vertexarray[ vertexindex ] = in.mVertices[ t ].x;
-            vertexarray[ vertexindex + 1 ] = in.mVertices[ t ].y;
-            vertexarray[ vertexindex + 2 ] = in.mVertices[ t ].z;
-            vertexarray[ vertexindex + 3 ] = in.mNormals[ t ].x;
-            vertexarray[ vertexindex + 4 ] = in.mNormals[ t ].y;
-            vertexarray[ vertexindex + 5 ] = in.mNormals[ t ].z;
-            vertexindex += 6;
-        }
-        //GL_ARRAY_BUFFER
-        glGenBuffers( 1, &out.vbo );
-        glBindBuffer( GL_ARRAY_BUFFER, out.vbo );
-        glBufferData( GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexindex, vertexarray, GL_STATIC_DRAW );
+        vertexarray[ vertexindex ] = in.mVertices[ t ].x;
+        vertexarray[ vertexindex + 1 ] = in.mVertices[ t ].y;
+        vertexarray[ vertexindex + 2 ] = in.mVertices[ t ].z;
+        vertexarray[ vertexindex + 3 ] = in.mNormals[ t ].x;
+        vertexarray[ vertexindex + 4 ] = in.mNormals[ t ].y;
+        vertexarray[ vertexindex + 5 ] = in.mNormals[ t ].z;
+        vertexindex += 6;
     }
+    //GL_ARRAY_BUFFER
+    glGenBuffers( 1, &out.vbo );
+    glBindBuffer( GL_ARRAY_BUFFER, out.vbo );
+    glBufferData( GL_ARRAY_BUFFER, sizeof( vertex ) * in.mNumVertices, vertexarray, GL_STATIC_DRAW );
 
     out.numvertices = in.mNumVertices;
 
-    static uint stride = 6 * sizeof(GLfloat);
-
-    glVertexAttribPointer(shader.getAttrib("position"), 3, GL_FLOAT, GL_FALSE, stride, 0);
+    glVertexAttribPointer(shader.getAttrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof( vertex), (void*)offsetof(vertex, x));
     glEnableVertexAttribArray(shader.getAttrib("position"));
 
-    static GLuint loc_normal_offset    = 3*sizeof(GLfloat);
-    glVertexAttribPointer(shader.getAttrib("normal"), 3, GL_FLOAT, GL_FALSE, stride, &loc_normal_offset);
-    glEnableVertexAttribArray(shader.getAttrib("normal"));
 
-    /*debug for faces or elements*/
-    /*for( unsigned int x=0; x < in.mNumVertices ; ++x )
-    {
-        printf("%d  array %d x %f y %f z %f \n",x,facearray[ x ], vertexarray[ facearray[ x ] ], vertexarray[ facearray[ x ] + 1 ], vertexarray[ facearray[ x ] + 2 ] 	);
-    }*/
+    glVertexAttribPointer(shader.getAttrib("normal"), 3, GL_FLOAT, GL_FALSE, sizeof( vertex ), (void*)offsetof(vertex, nx));
+    glEnableVertexAttribArray(shader.getAttrib("normal"));
 
     free( vertexarray );
     free( facearray );
