@@ -31,8 +31,8 @@ public:
 
     void setAspect(int width, int height);
 
-    glm::mat4 projection();
-    glm::mat4 world2eye();
+    glm::mat4 projection() const;
+    glm::mat4 world2eye() const;
 
     glm::vec3 pose;
     glm::vec3 lookat;

@@ -18,7 +18,7 @@ using namespace glm;
 static const std::string basepath = "../../test/models/OBJ/";
 static const std::string modelname = "spider.obj";
 
-bool AssimpLoader::Import3DFromFile( const string& pFile)
+bool AssimpLoader::importFromFile( const string& pFile)
 {
     //check if file exists
     ifstream fin(pFile.c_str());
@@ -47,7 +47,7 @@ bool AssimpLoader::Import3DFromFile( const string& pFile)
     // We're done. Everything will be cleaned up by the importer destructor
     return true;
 }
-void AssimpLoader::loadNodes(Node& root, vector<Node>& nodes, const Shader& shader)
+void AssimpLoader::loadNodes(Node& root, vector<Node>& nodes, const Shader& shader) const
 {
     size_t nbNodes = countNodes(scene->mRootNode);
     cout << "Loading " << nbNodes << " nodes..." << endl;
@@ -57,7 +57,7 @@ void AssimpLoader::loadNodes(Node& root, vector<Node>& nodes, const Shader& shad
     root = *recursiveLoad(scene->mRootNode, nodes, shader);
 }
 
-size_t AssimpLoader::countNodes(const aiNode* nd) {
+size_t AssimpLoader::countNodes(const aiNode* nd) const {
 
     size_t count = 1;
 
@@ -68,7 +68,7 @@ size_t AssimpLoader::countNodes(const aiNode* nd) {
 
     return count;
 }
-Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes, const Shader& shader)
+Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes, const Shader& shader) const
 {
 
     Node node;
@@ -108,7 +108,7 @@ Node* AssimpLoader::recursiveLoad(const aiNode* nd, vector<Node>& nodes, const S
     return &nodes.back(); // returns the pointer to my own copy in 'nodes'
 }
 
-void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node, const Shader& shader)
+void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node, const Shader& shader) const
 {
     out.node = &node;
     out.name = string(in.mName.C_Str());
@@ -191,7 +191,7 @@ void AssimpLoader::makeMesh(const aiMesh &in, Mesh &out, const Node& node, const
 }
 
 
-void AssimpLoader::fillMaterial(const aiMaterial& mat, Mesh& mesh) {
+void AssimpLoader::fillMaterial(const aiMaterial& mat, Mesh& mesh) const {
 
     aiColor3D aiAmbient;
     aiColor3D aiDiffuse;

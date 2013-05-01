@@ -11,7 +11,7 @@ GLRenderer::GLRenderer() : camera(), assimploader(){}
 void GLRenderer::load(const string& file)
 {
 
-    assimploader.Import3DFromFile(file);
+    assimploader.importFromFile(file);
 
     shader.init(string("share/") + APPNAME + "/shaders/phong.vert", string("share/") + APPNAME + "/shaders/phong.frag");
     assimploader.loadNodes(root, nodes, shader);

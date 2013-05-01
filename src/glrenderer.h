@@ -19,13 +19,14 @@
 class GLRenderer
 {
 public:
+    Camera camera;
+
     GLRenderer();
 
     void load(const std::string &file);
     void display();
 
     void resize(const int w, const int h);
-    Camera camera;
 
 private:
 

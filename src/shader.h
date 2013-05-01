@@ -25,10 +25,7 @@ public:
     void bind(); // Bind our GLSL shader program
     void unbind(); // Unbind our GLSL shader program
     
-    unsigned int id(); // Get the identifier for our program
-
-    // Returns a GLSL attribute location, using memoization to limit opengl calls to the minimum
-    GLuint getAttrib(const std::string& attrib) const;
+    unsigned int id() const; // Get the identifier for our program
 
     void setUniform(const std::string& uniform, float x);
     void setUniform(const std::string& uniform, float x, float y);
@@ -39,11 +36,14 @@ public:
     void setUniform(const std::string& uniform, const glm::vec4& vec);
     void setUniform(const std::string& uniform, const glm::mat4& mat);
 
-    // Returns a uniform location, using memoization to limit opengl calls to the minimum
-    GLuint getUniform(const std::string& uniform) const;
 
+    // Returns a GLSL attribute location, using memoization to limit opengl calls to the minimum
+    GLuint getAttrib(const std::string& attrib) const;
 
 private:
+
+    // Returns a uniform location, using memoization to limit opengl calls to the minimum
+    GLuint getUniform(const std::string& uniform) const;
 
     mutable std::map<std::string, GLuint> _uniforms;
     mutable std::map<std::string, GLuint> _attribs;

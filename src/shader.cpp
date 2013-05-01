@@ -155,7 +155,7 @@ Shader::~Shader() {
 /**
     id returns the integer value associated with the shader program
 */
-unsigned int Shader::id() {
+unsigned int Shader::id() const {
     return shader_id; // Return the shaders identifier
 }
 

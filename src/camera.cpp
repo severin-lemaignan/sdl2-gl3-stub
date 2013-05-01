@@ -44,13 +44,13 @@ void Camera::setAspect(int width, int height)
 }
 
 // GL_PROJECTION
-mat4 Camera::projection()
+mat4 Camera::projection() const
 {
     return perspective(DEFAULT_FOV, _aspect, ZNEAR, ZFAR);
 }
 
 // GL_MODELVIEW (well, WORLDVIEW in fact)
-mat4 Camera::world2eye()
+mat4 Camera::world2eye() const
 {
     mat4 m = lookAt(pose, lookat, UP);
     return m;
