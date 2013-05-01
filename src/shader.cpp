@@ -11,11 +11,14 @@
 #include <sstream>
 #include <stdexcept>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "shader.h"
 
 // Stolen from http://www.swiftless.com/tutorials/opengl4/2-opengl-shaders.html
 
 using namespace std; // Include the standard namespace
+using namespace glm;
 
 
 /**
@@ -182,6 +185,47 @@ GLuint Shader::getAttrib(const string &attrib) const
         return loc;
     }
     else return it->second;
+}
+
+void Shader::setUniform(const string &uniform, float x)
+{
+   glUniform1f(getUniform(uniform), x );
+}
+
+void Shader::setUniform(const string &uniform, float x, float y)
+{
+   glUniform2f(getUniform(uniform), x, y );
+}
+
+void Shader::setUniform(const string &uniform, float x, float y, float z)
+{
+   glUniform3f(getUniform(uniform), x, y, z );
+}
+
+void Shader::setUniform(const string &uniform, float x, float y, float z, float w)
+{
+    glUniform4f(getUniform(uniform), x, y, z, w );
+}
+
+void Shader::setUniform(const string &uniform, const vec2 &vec)
+{
+    glUniform2fv(getUniform(uniform), 1, value_ptr(vec));
+}
+
+
+void Shader::setUniform(const string &uniform, const vec3 &vec)
+{
+    glUniform3fv(getUniform(uniform), 1, value_ptr(vec));
+}
+
+void Shader::setUniform(const string &uniform, const vec4 &vec)
+{
+    glUniform4fv(getUniform(uniform), 1, value_ptr(vec));
+}
+
+void Shader::setUniform(const string &uniform, const mat4 &mat)
+{
+    glUniformMatrix4fv(getUniform(uniform), 1, GL_FALSE, value_ptr(mat));
 }
 
 

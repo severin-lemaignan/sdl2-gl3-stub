@@ -4,6 +4,8 @@
 #include <string>
 #include <map>
 
+#include <glm/glm.hpp>
+
 // Stolen from http://www.swiftless.com/tutorials/opengl4/2-opengl-shaders.html
 
 /**
@@ -27,6 +29,15 @@ public:
 
     // Returns a GLSL attribute location, using memoization to limit opengl calls to the minimum
     GLuint getAttrib(const std::string& attrib) const;
+
+    void setUniform(const std::string& uniform, float x);
+    void setUniform(const std::string& uniform, float x, float y);
+    void setUniform(const std::string& uniform, float x, float y, float z);
+    void setUniform(const std::string& uniform, float x, float y, float z, float w);
+    void setUniform(const std::string& uniform, const glm::vec2& vec);
+    void setUniform(const std::string& uniform, const glm::vec3& vec);
+    void setUniform(const std::string& uniform, const glm::vec4& vec);
+    void setUniform(const std::string& uniform, const glm::mat4& mat);
 
     // Returns a uniform location, using memoization to limit opengl calls to the minimum
     GLuint getUniform(const std::string& uniform) const;
